@@ -1,0 +1,27 @@
+@use 'base/variables' as v;
+@use 'base/mixins' as m;
+
+.acciones {
+    margin-top: 5rem;
+
+    @include m.tablet {
+        display: flex;
+        justify-content: space-around;
+    }
+    
+    a {
+        display: block;
+        text-align: center;
+        margin-bottom: 2rem;
+        color: v.$negro;
+
+        &:last-of-type {
+            margin-bottom: 0;
+        }
+
+        &:hover {
+            transform: scale(1.1);
+            transition: transform 180ms linear;
+        }
+    }
+}
