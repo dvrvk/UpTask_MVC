@@ -17,6 +17,18 @@ class Usuario extends ActiveRecord {
         $this->confirmado = $args['confirmado'] ?? 0;
     }
 
+    // Validar el login de usuarios
+    public function validarLogin() {
+        
+        self::validarEmail();
+
+        if(!$this->password) {
+            self::$alertas['error'][] = 'El password es obligatorio';
+        }
+
+        return self::$alertas;
+    }
+
     // Validación para cuentas nuevas
     public function validarNuevaCuenta() {
         if(!$this->nombre) {
@@ -38,6 +50,31 @@ class Usuario extends ActiveRecord {
         return self::$alertas;
     }
 
+    // Valida un email
+    public function validarEmail() {
+        if(!$this->email) {
+            self::$alertas['error'][] = 'El campo email es obligatorio';
+        } elseif(!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
+            self::$alertas['error'][] = 'Email no valido';
+        }
+
+        return self::$alertas;
+    }
+
+    // Valida el password 
+    public function validarPassword() {
+        
+        if(!$this->password) {
+            self::$alertas['error'][] = 'El password es obligatorio';
+        } elseif (strlen($this->password) < 6) {
+            self::$alertas['error'][] = 'El password debe contener al menos 6 caracteres';
+        } elseif($this->password !== $this->password2){
+            self::$alertas['error'][] = 'Los password no pueden ser diferentes';
+        }
+
+        return self::$alertas;
+    }
+
     // Hashea el password
     public function hashPassword() {
         $this->password = password_hash($this->password, PASSWORD_BCRYPT);
@@ -47,4 +84,6 @@ class Usuario extends ActiveRecord {
     public function crearToken() {
         $this->token = md5(uniqid()); //uniqid();
     }
+
+    
  }

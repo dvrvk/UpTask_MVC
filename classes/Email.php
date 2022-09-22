@@ -46,4 +46,33 @@ class Email {
 
     }
 
+    public function enviarRecuperacion() {
+        $mail = new PHPMailer();
+        $mail->isSMTP();
+        $mail->Host = 'smtp.mailtrap.io';
+        $mail->SMTPAuth = true;
+        $mail->Port = 2525;
+        $mail->Username = '767657e34e57f1';
+        $mail->Password = '91f2443b0fd30c';
+
+        $mail->setFrom('cuentas@uptask.com');
+        $mail->addAddress('cuentas@uptask.com', 'uptask.com');
+        $mail->Subject = 'Restablece tu password';
+
+        $mail->isHTML(TRUE);
+        $mail->CharSet = 'UTF-8';
+
+        $contenido = "<html>";
+        $contenido .= "<p>Hola <strong>" . $this->nombre . "</strong>, para recuperar tu password pincha en el siguiente enlace</p>";
+        $contenido .= "<p>Presiona aquí: <a href='http://localhost:3000/restablecer?token=". $this->token . "'>Restablecer password</a></p>";
+        $contenido .= "<p>Si tu no solicitaste el cambio de password, puedes ignorar este mensaje</p>";
+        $contenido .= "</html>";
+
+        $mail->Body = $contenido;
+        
+        // Enviar email
+        $mail->send();
+
+    }
+
 }
