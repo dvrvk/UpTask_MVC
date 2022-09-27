@@ -21,5 +21,17 @@
         }
     }
 
+    .formulario {
+        input:not([type="submit"]) {
+            background-color: v.$blanco;
+        }
+
+        input[type="submit"] {
+            @include m.boton(v.$indigo, v.$blanco);
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+    }
+
 
 }

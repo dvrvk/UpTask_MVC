@@ -68,6 +68,13 @@ class ActiveRecord {
         return array_shift( $resultado ) ;
     }
 
+    // Buscan todos los registros que pertenecen a un ID
+    public static function belongsTo($columna, $valor) {
+        $query = "SELECT * FROM " . static::$tabla . " WHERE ${columna} = '${valor}'";
+        $resultado = self::consultarSQL($query);
+        return $resultado;
+    }
+
     // SQL para Consultas Avanzadas.
     public static function SQL($consulta) {
         $query = $consulta;
@@ -83,9 +90,9 @@ class ActiveRecord {
         // Insertar en la base de datos
         $query = " INSERT INTO " . static::$tabla . " ( ";
         $query .= join(', ', array_keys($atributos));
-        $query .= " ) VALUES (' "; 
+        $query .= " ) VALUES ('"; 
         $query .= join("', '", array_values($atributos));
-        $query .= " ') ";
+        $query .= "') ";
 
         // Resultado de la consulta
         $resultado = self::$db->query($query);
