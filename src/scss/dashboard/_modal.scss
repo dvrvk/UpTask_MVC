@@ -54,14 +54,17 @@
             @include m.boton(v.$indigo, v.$blanco);
             margin-bottom: 1rem;
 
-            @include m.tablet {
-                margin: 0;
-            }
+            
         }
 
         .cerrar-modal {
             @include m.boton(v.$naranja, v.$blanco);
             margin: 0;
+            text-transform: uppercase;
+
+            @include m.tablet {
+                margin: 0;
+            }
         }
         
         &.animar {
