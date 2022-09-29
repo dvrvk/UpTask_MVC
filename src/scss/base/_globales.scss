@@ -20,9 +20,15 @@ body {
     margin: 0 auto;
 }
 .contenedor-sm {
+    max-width: 70rem;
+    margin: 0 auto;
+}
+
+.contenedor-l {
     max-width: 100rem;
     margin: 0 auto;
 }
+
 a {
     text-decoration: none;
 }
