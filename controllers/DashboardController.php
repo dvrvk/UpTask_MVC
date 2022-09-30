@@ -2,6 +2,7 @@
 
 namespace Controllers;
 
+use Classes\Email;
 use Model\Proyecto;
 use Model\Usuario;
 use MVC\Router;
@@ -84,27 +85,51 @@ class DashboardController {
 
         $alertas = [];
         $usuario = Usuario::find($_SESSION['id']);
+        
 
         if($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Compruebo si existe un email por confirmar
+            $PreEmailTemp = $usuario->emailTemp;
+
             $usuario->sincronizar($_POST);
             $alertas = $usuario->validarPerfil();
 
             if(empty($alertas)){
                 // Verificar que el email no exista
-                $existeusuario = Usuario::where('email', $usuario->email);
+                $existeusuario = Usuario::where('email', $usuario->emailTemp);
                 if($existeusuario && $existeusuario->id !== $usuario->id) {
                     // Mensaje de error
                     Usuario::setAlerta('error', 'Email no valido, la cuenta ya existe');
-
+                     
                 } else {
-                    // Guardar el usuario
-                    $usuario->guardar();
+                    if($usuario->email === $usuario->emailTemp && empty($PreEmailTemp)) {
+                        // No he cambiado el email
+                        $usuario->emailTemp = '';
+                        $usuario->guardar();
+                        Usuario::setAlerta('exito', 'Guardado Correctamente');
+                        
+                    }  elseif($usuario->email === $usuario->emailTemp) {
+                        // He cambiado el email anteriormente
+                        $usuario->emailTemp = $PreEmailTemp;
+                        $usuario->guardar();
+                        Usuario::setAlerta('exito', "Guardado correctamente, el email $PreEmailTemp está pendiente de confirmar");
+                    } else {
+                        // He cambiado el email
 
-                    // Alerta exito
-                    Usuario::setAlerta('exito', 'Guardado Correctamente');
+                        // Crear token
+                        $usuario->crearToken();
+
+                        // Guardo Usuario
+                        $usuario->guardar();
+                        Usuario::setAlerta('exito', "Te hemos enviado las intrucciones a: " . $_POST['emailTemp'] . " para que confirmes tu nuevo email, hasta entonces debes usar el anterior");
+                        
+                        $email = new Email($usuario->emailTemp, $usuario->nombre, $usuario->token);
+                        $email->enviarCambioEmail();
+                    }
 
                     // Asginar los datos a la sesión
-                    $_SESSION['nombre'] = $usuario->nombre;
+                    $_SESSION['nombre'] = $usuario->nombre;        
+  
                 }
 
                 
@@ -121,4 +146,38 @@ class DashboardController {
         ]);
 
     }
+
+    public static function cambioEmail(Router $router){
+        $alertas = [];
+        $token = s($_GET['token']);
+        if(!$token){
+            header('Location: /');
+        }
+
+        $usuario = Usuario::where('token', $token);
+        if(!$usuario) {
+            Usuario::setAlerta('error', 'El token es incorrecto o no existe');
+        } else {
+            $usuario->email = $usuario->emailTemp;
+            $usuario->emailTemp = '';
+            $usuario->token = '';
+            
+            $resultado = $usuario->guardar();
+
+            if($resultado) {
+                Usuario::setAlerta('exito', 'Tu nuevo email ' . $usuario->email . ' ha sido confirmado');
+            } else {
+                Usuario::setAlerta('error', 'Error al guardar pruebe más tarde');
+            }
+        }
+
+
+
+        $alertas = Usuario::getAlertas();
+        $router->render('/dashboard/cambio-email', [
+            'titulo' => 'Confirmar cambio email',
+            'alertas' => $alertas
+        ]);
+    }
+
 }

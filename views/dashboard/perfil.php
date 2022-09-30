@@ -20,7 +20,7 @@
             <input 
                 type="email" 
                 value="<?php echo $usuario->email; ?>"
-                name="email"
+                name="emailTemp"
                 placeholder="Tu email"
             />
         </div>

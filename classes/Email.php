@@ -75,4 +75,33 @@ class Email {
 
     }
 
+    public function enviarCambioEmail() {
+        $mail = new PHPMailer();
+        $mail->isSMTP();
+        $mail->Host = 'smtp.mailtrap.io';
+        $mail->SMTPAuth = true;
+        $mail->Port = 2525;
+        $mail->Username = '767657e34e57f1';
+        $mail->Password = '91f2443b0fd30c';
+
+        $mail->setFrom('cuentas@uptask.com');
+        $mail->addAddress('cuentas@uptask.com', 'uptask.com');
+        $mail->Subject = 'Confirma tu nuevo email';
+
+        $mail->isHTML(TRUE);
+        $mail->CharSet = 'UTF-8';
+
+        $contenido = "<html>";
+        $contenido .= "<p>Hola <strong>" . $this->nombre . "</strong>, para confirmar tu nuevo email pincha en el siguiente enlace: </p>";
+        $contenido .= "<p>Presiona aquí: <a href='http://localhost:3000/cambioEmail?token=". $this->token . "'>Confirmar</a></p>";
+        $contenido .= "<p>Si tu no solicitaste el cambio de email, puedes ignorar este mensaje</p>";
+        $contenido .= "</html>";
+
+        $mail->Body = $contenido;
+        
+        // Enviar email
+        $mail->send();
+
+    }
+
 }
