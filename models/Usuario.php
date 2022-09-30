@@ -75,6 +75,19 @@ class Usuario extends ActiveRecord {
         return self::$alertas;
     }
 
+    // Validar perfil usuario
+    public function validarPerfil() {
+        if(!$this->nombre) {
+            self::$alertas['error'][] = 'El nombre es obligatorio';
+        }
+
+        if(!$this->email) {
+            self::$alertas['error'][] = 'El email es obligatorio';
+        }
+
+        return self::$alertas;
+    }
+
     // Hashea el password
     public function hashPassword() {
         $this->password = password_hash($this->password, PASSWORD_BCRYPT);
@@ -84,6 +97,9 @@ class Usuario extends ActiveRecord {
     public function crearToken() {
         $this->token = md5(uniqid()); //uniqid();
     }
+
+    
+
 
     
  }
