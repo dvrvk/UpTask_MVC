@@ -8,6 +8,8 @@
     padding: 2rem;
     display: flex;
     justify-content: center;
+
+   
     .filtros-inputs {
         @include m.tablet {
             display: flex;
@@ -31,7 +33,7 @@
     .campo {
         margin-bottom: 2rem;
         display: flex;
-        justify-content: center;
+        justify-content: space-between;
         align-items: center;
         gap: 2rem;
 
