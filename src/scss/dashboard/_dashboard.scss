@@ -38,5 +38,13 @@
         }
     }
 
+    .enlace {
+        color: v.$indigo;
+
+        &:hover {
+            color: darken(v.$indigo, 20%);
+        }
+    }
+
 
 }

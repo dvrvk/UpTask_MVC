@@ -38,6 +38,8 @@ $router->get('/proyecto', [DashboardController::class, 'proyecto']);
 $router->get('/perfil', [DashboardController::class, 'perfil']);
 $router->post('/perfil', [DashboardController::class, 'perfil']);
 $router->get('/cambioEmail', [DashboardController::class, 'cambioEmail']);
+$router->get('/cambiar-password', [DashboardController::class, 'cambiar_password']);
+$router->post('/cambiar-password', [DashboardController::class, 'cambiar_password']);
 
 
 // API para las tareas
