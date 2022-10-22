@@ -193,7 +193,35 @@ class DashboardController {
 
             $alertas = $usuario->nuevo_password();
 
+            if(empty($alertas)) {
+                $resultado = $usuario->comprobar_password();
+                if($resultado){
+
+                    $usuario->password = $usuario->password_nuevo;
+                    // Eliminar propiedades no necesarias
+                    unset($usuario->password_actual);
+                    unset($usuario->password_nuevo);
+                    
+                    // Hashear el nuevo password
+                    $usuario->hashpassword();
+
+                    // Actualizar
+                    $resultado = $usuario->guardar();
+
+                    if($resultado){
+                        Usuario::setAlerta('exito', 'Contraseña actualizada correctamente');
+                        $alertas = Usuario::getAlertas();
+                    }                    
+
+                } else {
+                    Usuario::setAlerta('error', 'Contraseña incorrecta');
+                    $alertas = Usuario::getAlertas();
+                }
+            }
+
         }
+
+        
 
         $router->render('dashboard/cambiar-password', [
             'titulo' => 'Cambiar Password',
